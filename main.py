@@ -14,16 +14,34 @@ def hello_world_node(state: HelloWorldState):
     state["greeting"] = "Hello World" + state["greeting"]
     return state
 
+def exclamation_node(state: HelloWorldState):
+    state["greeting"] += "!"
+    return state
 
+
+#Graph
 builder = StateGraph(HelloWorldState)
 builder.add_node("greet", hello_world_node)
+builder.add_node("exclaim", exclamation_node)
+#Logic
 builder.add_edge(START, "greet")
-builder.add_edge("greet" , END)
-
+builder.add_edge("greet", "exclaim")
+builder.add_edge("exclaim" , END)
+# Add
 graph = builder.compile()
 result = graph.invoke({"greeting" : " from LangGraph"})
 
 print(result)
+
+
+
+
+
+
+
+
+
+
 
 
 #Code to visualize the graph, we will re-use this in all future lessons
