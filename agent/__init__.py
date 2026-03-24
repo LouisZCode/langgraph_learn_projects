@@ -1,3 +1,3 @@
-from .agent import agent
+from .agent import agent, model
 
 print("loaded agent")
