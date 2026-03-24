@@ -1,14 +1,16 @@
 from langgraph import graph
 from langgraph.graph import START, END, StateGraph, MessagesState
+from urllib3 import response
 from agent import agent
 
 def call_llm(state:MessagesState):
     messages = state["messages"]
-    response = agent.invoke(messages[-1].content)
-    return {"messages" : [response]}
+    response = agent.invoke({"messages" : messages})
+    return {"messages": [response["messages"][-1]]}
 
 builder = StateGraph(MessagesState)
 builder.add_node("call_llm", call_llm)
+
 
 builder.add_edge(START, "call_llm")
 builder.add_edge("call_llm", END)
@@ -16,6 +18,7 @@ builder.add_edge("call_llm", END)
 graph = builder.compile()
 
 input_messsage = ({"messages" : [{"role" : "user", "content" : input("your message is:\n")}]})
+
 
 for i in graph.stream(input_messsage, stream_mode="values"):
     i["messages"][-1].pretty_print()

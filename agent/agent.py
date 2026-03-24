@@ -14,7 +14,7 @@ model = ChatOpenRouter(
 
 agent = create_agent(                                                                                                            
     model=model,                                                                                                        
-    system_prompt="You answer with no preambles and all in plain texts with spaces"
+    system_prompt="You answer with no preambles and all in plain texts with spaces. do not use markdown formatting (no **, no #, no *, etc.)."
     )
 
 """
