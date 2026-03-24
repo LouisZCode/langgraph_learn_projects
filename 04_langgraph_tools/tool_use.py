@@ -1,13 +1,12 @@
 from langchain.tools import tool
+from langchain_core.messages import ToolMessage
 from langgraph.prebuilt import ToolNode
 
 from langgraph import graph
 from langgraph.graph import END, START, MessagesState, StateGraph
-from urllib3 import response
 
 from agent import model
 from tavily import TavilyClient
-
 
 @tool
 def search_the_web(query : str):
@@ -16,29 +15,26 @@ def search_the_web(query : str):
     response = tavily_client.search(query)
     return response
 
-tool_node = ToolNode([search_the_web])
+tool_node = ToolNode([search_the_web], handle_tool_errors=False)
 model = model.bind_tools([search_the_web])
 
 def call_llm(state:MessagesState):
     messages = state["messages"]
     response = model.invoke(messages[-1].content)
-
-    #capture the tool result
-    if response.tool_calls:
-        tool_result = tool_node.invoke({"messages": [response]})
-    
-        tool_message = tool_result["messages"][-1].content
-    
-        response.content += f"\nTool Result: {tool_message}"
-
     return {"messages": [response]}
 
+def call_tool(state:MessagesState):
+    return "tools" if state["messages"][-1].tool_calls else END
 
 builder = StateGraph(MessagesState)
 builder.add_node("call_llm", call_llm)
+builder.add_node("tools", tool_node)
 
 builder.add_edge(START, "call_llm")
-builder.add_edge("call_llm", END)
+builder.add_conditional_edges(
+    "call_llm", call_tool, ["tools", END]
+)
+builder.add_edge("tools", "call_llm")
 
 graph = builder.compile()
 

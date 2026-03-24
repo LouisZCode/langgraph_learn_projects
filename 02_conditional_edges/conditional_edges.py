@@ -43,7 +43,7 @@ result = graph.invoke({"greeting" : "Hey sir how are you?"})
 print(result)
 
 
-
+"""
 #Code to visualize the graph, we will re-use this in all future lessons
 
 from langchain_core.runnables.graph import MermaidDrawMethod
@@ -66,3 +66,4 @@ with open(filename, 'wb') as f:
         subprocess.call(('xdg-open', filename))
     elif sys.platform.startswith('win'):
         os.startfile(filename)
+"""

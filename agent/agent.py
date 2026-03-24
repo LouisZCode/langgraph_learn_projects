@@ -12,6 +12,8 @@ model = ChatOpenRouter(
     model="nvidia/nemotron-3-super-120b-a12b:free",
 )
 
+
+
 agent = create_agent(                                                                                                            
     model=model,                                                                                                        
     system_prompt="You answer with no preambles and all in plain texts with spaces. do not use markdown formatting (no **, no #, no *, etc.)."
