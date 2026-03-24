@@ -20,7 +20,7 @@ model = model.bind_tools([search_the_web])
 
 def call_llm(state:MessagesState):
     messages = state["messages"]
-    response = model.invoke(messages[-1].content)
+    response = model.invoke(messages)
     return {"messages": [response]}
 
 def call_tool(state:MessagesState):
@@ -39,7 +39,7 @@ builder.add_edge("tools", "call_llm")
 graph = builder.compile()
 
 input_messsage = ({"messages" : [
-    {"role": "system", "content" :"You answer all questions. If the question is recent, you use your tool. If it is not or generic, you just answer. You have access to real time information using your 'search_the_web' tool."},
+    {"role": "system", "content" :"You answer all questions. If the question is recent, you use your tool. If it is not or generic, you just answer. You have access to real time information using your 'search_the_web' tool. do not use markdown formatting (no **, no #, no *, etc.)."},
     {"role" : "user", "content" : input("your message is:\n")}
     ]})
 
