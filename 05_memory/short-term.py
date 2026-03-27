@@ -31,7 +31,7 @@ while True:
     else:
 
         input_messsage = ({"messages" : [
-            {"role" : "user", "content" : f"{user_input}"}
+            {"role" : "user", "content" : "{user_input}"}
             ]})
 
         #here we create the session id thet needt to be part of the 
